@@ -26,17 +26,15 @@ export default function App() {
       fetchData();
   },[])
 
-  const handlePokemonClick = (pokemonName) => {
-    // Recherche du Pokémon sélectionné dans les données déjà récupérées
-    const selected = pokemons.find(pokemon => pokemon.name === pokemonName);
-    if (selected) {
-      // Mise à jour des détails du Pokémon sélectionné
-      setSelectedPokemon(selected);
-    } else {
-      console.error(`Pokemon ${pokemonName} not found in the current list.`);
+  const handlePokemonClick = async (pokemonName) => {
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+      const data = await response.json();
+      setSelectedPokemon(data);
+    } catch (error) {
+      console.error(`Error fetching details for ${pokemonName}:`, error);
     }
   };
-  
 
 
 
@@ -51,11 +49,15 @@ export default function App() {
       <div style={{ textAlign: 'center' }}>
         Emplacement de la carte de détail d'un pokémon ce sera le composant
         CardPokemonDetail
+        {selectedPokemon ? (
         <CardPokemonDetail
-            name={selectedPokemon.name}
-            height={selectedPokemon.height}
-            weight={selectedPokemon.weight}
+          name={selectedPokemon.name}
+          height={selectedPokemon.height}
+          weight={selectedPokemon.weight}
         />
+      ) : (
+        <p>Sélectionnez un Pokémon pour voir les détails.</p>
+      )}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {pokemons.map((pokemon) => (
@@ -69,6 +71,7 @@ export default function App() {
               width: '100px',
               cursor: 'pointer',
             }}
+            onClick={() => handlePokemonClick(pokemon.name)}
           >
             <h3>{pokemon.name}</h3>
           </div>
