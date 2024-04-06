@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
 import CardPokemonDetail from './components/CardPokemonDetail';
 
@@ -14,6 +14,36 @@ export default function App() {
     { name: 'Pikachu' },
     { name: 'Salameche' },
   ]);
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+
+  useEffect(() =>{
+      const fetchData = async () => {
+          const reponse = await fetch("https://pokeapi.co/api/v2/pokemon/")
+          const data = await reponse.json();
+          console.log(data.results);
+          setPokemons(data.results)
+      };
+      fetchData();
+  },[])
+
+  const handlePokemonClick = (pokemonName) => {
+    // Recherche du Pokémon sélectionné dans les données déjà récupérées
+    const selected = pokemons.find(pokemon => pokemon.name === pokemonName);
+    if (selected) {
+      // Mise à jour des détails du Pokémon sélectionné
+      setSelectedPokemon(selected);
+    } else {
+      console.error(`Pokemon ${pokemonName} not found in the current list.`);
+    }
+  };
+  
+
+
+
+
+
+
+
 
   return (
     <div>
@@ -21,6 +51,11 @@ export default function App() {
       <div style={{ textAlign: 'center' }}>
         Emplacement de la carte de détail d'un pokémon ce sera le composant
         CardPokemonDetail
+        <CardPokemonDetail
+            name={selectedPokemon.name}
+            height={selectedPokemon.height}
+            weight={selectedPokemon.weight}
+        />
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {pokemons.map((pokemon) => (
