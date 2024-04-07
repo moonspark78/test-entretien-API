@@ -15,6 +15,7 @@ export default function App() {
     { name: 'Salameche' },
   ]);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() =>{
       const fetchData = async () => {
@@ -36,6 +37,10 @@ export default function App() {
     }
   };
 
+  const filterData = pokemons.filter((pokemon) => {
+    return pokemon.name.toLowerCase().includes(searchValue.toLowerCase());
+  });
+
 
 
 
@@ -46,6 +51,8 @@ export default function App() {
   return (
     <div>
       <h1>Liste de pokémons</h1>
+      <input placeholder="Enter text here" class="input-style" type="text" value={searchValue} onChange={(e) => setSearchValue(e.target.value)}   />
+
       <div style={{ textAlign: 'center' }}>
         Emplacement de la carte de détail d'un pokémon ce sera le composant
         CardPokemonDetail
@@ -60,7 +67,7 @@ export default function App() {
       )}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {pokemons.map((pokemon) => (
+        {filterData.map((pokemon) => (
           <div
             id="carte-pokemon"
             style={{
